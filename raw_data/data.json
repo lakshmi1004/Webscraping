@@ -1,0 +1,62 @@
+{
+    "Prices": [
+        "Price\n\u00a34.99",
+        "Price\n\u00a317.99",
+        "Price\n\u00a33.49",
+        "Price\n\u00a33.49",
+        "Price\n\u00a329.99",
+        "Price\n\u00a329.99",
+        "Price\n\u00a34.99",
+        "Price\n\u00a317.99",
+        "Price\n\u00a317.99",
+        "Price\n\u00a317.99",
+        "Price\n\u00a311.99",
+        "Price\n\u00a314.99",
+        "Price\n\u00a34.99"
+    ],
+    "Product_name": [
+        "Series 22",
+        "Minions Kung Fu Training",
+        "Fairground MF Acc. Set",
+        "TLM2 Accessory Set 2019",
+        "Minifigure Display Case 16 \u2013 Red",
+        "Shark Suit Guy Bag Tag",
+        "Lady Bug Girl Keyring",
+        "LEGO\u00ae Minifigure Display Case 16",
+        "8-Minifigure Display Case \u2013 Red",
+        "Display Case 8 \u2013 Black",
+        "LEGO\u00ae Minifigure Notes: 20 Notecards and Envelopes",
+        "Small Parts: The Secret Life of Minifigures",
+        "French Bull Dog Guy Keyring"
+    ],
+    "URL": [
+        "https://www.lego.com/en-gb/product/series-22-71032",
+        "https://www.lego.com/en-gb/product/minions-kung-fu-training-40511",
+        "https://www.lego.com/en-gb/product/fairground-mf-acc-set-40373",
+        "https://www.lego.com/en-gb/product/tlm2-accessory-set-2019-853865",
+        "https://www.lego.com/en-gb/product/minifigure-display-case-16-red-5006154",
+        "https://www.lego.com/en-gb/product/shark-suit-guy-bag-tag-5007229",
+        "https://www.lego.com/en-gb/product/lady-bug-girl-keyring-854157",
+        "https://www.lego.com/en-gb/product/lego-minifigure-display-case-16-5005375",
+        "https://www.lego.com/en-gb/product/8-minifigure-display-case-red-5006151",
+        "https://www.lego.com/en-gb/product/display-case-8-black-5006152",
+        "https://www.lego.com/en-gb/product/lego-minifigure-notes-20-notecards-and-envelopes-5007178",
+        "https://www.lego.com/en-gb/product/small-parts-the-secret-life-of-minifigures-5007179",
+        "https://www.lego.com/en-gb/product/french-bull-dog-guy-keyring-854158"
+    ],
+    "UUID": [
+        "556290ed3d7d45bb901dc3cdf9070381",
+        "b37143ded0dd4b73af70066f5f456051",
+        "f7c51dbcd0a448879e633598b65c34fa",
+        "20ee88a994174b268c30910fa7ffef8f",
+        "de0504cd7412434a80cce3bf98c7b96d",
+        "8d8ed6e244ce46b381aa40d0395c700c",
+        "25ee54967ad94db891f1def4cdc6ea21",
+        "a9d2eead33a3421c95974f0387197b3d",
+        "86c32e83e10346d288baf53400941fa0",
+        "b382e8514ccd4dccab622e531c3ddd4d",
+        "6c1b5387ade94ec0a42f916268d938f1",
+        "a7c6c090585f42c8970f546a8396a334",
+        "00d7e3df57684731bb177ea49035fd17"
+    ]
+}
