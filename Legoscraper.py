@@ -1,3 +1,13 @@
+from crypt import methods
+import time
+import pandas as pd
+from pandas import DataFrame
+import os
+import requests
+from bs4 import BeautifulSoup
+import uuid
+from uuid import UUID
+import json
 from dataclasses import dataclass
 from logging import exception
 from typing import Container, List
@@ -10,24 +20,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException #used to debug the program
 from webdriver_manager.chrome import ChromeDriverManager
-import time
-import pandas as pd
-from pandas import DataFrame
-import os
-import requests
-from bs4 import BeautifulSoup
-import uuid
-from uuid import UUID
-import json
+
 
 class Scraper():
     """This class is to scarpe the Lego Website"""
 
     def __init__(self, url:str = 'https://www.lego.com/en-gb')-> None:
-        """ Initailising the theme"""
-        #self.selected_theme = selected_theme
-        #self.selected_theme = selected_theme
-        #input('Choose a Theme name(Minions,Technics,DUPLO): ')
+
+        """ Initailising the Lego Website address"""
         self.driver = Chrome(ChromeDriverManager().install())
         self.driver.get(url)
         self.driver.maximize_window()
@@ -63,52 +63,7 @@ class Scraper():
                 print('no elements found')
 
     
-    def _set_by_price(self)-> None:
-        """This method is used to click Theme menu"""
-        xpath = '//*[@id="blte6fb96bc03e90791_submenubutton"]/div/span'
-        try:
-            time.sleep(2)
-            WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH, xpath)))
-            self.driver.find_element(By.XPATH,xpath).click()
-        except TimeoutException:
-            print('no elements found')
-    
-    def _Price_Range_href(self) -> str:
-        """This method is used to click Theme menu"""
-        LPR_href = []
-        price_range = {}
-        
-        Under_20 = self.driver.find_element(
-            By.XPATH,'//a[@data-analytics-title="price-band-a"]').get_attribute('href')
-        LPR_href.append(Under_20)
-        price_range.update({'Under 20':Under_20})
-        Between_20_50 = self.driver.find_element(
-            By.XPATH,'//a[@data-analytics-title="price-band-b"]').get_attribute('href')
-        LPR_href.append(Between_20_50)
-        price_range.update({'Between 20 and 50':Between_20_50})
-
-        Between_50_100 = self.driver.find_element(
-            By.XPATH,'//a[@data-analytics-title="price-band-c"]').get_attribute('href')
-        LPR_href.append(Between_50_100)
-        price_range.update({'Between 50 and 100':Between_50_100})
-
-        Between_100_150 = self.driver.find_element(
-            By.XPATH,'//a[@data-analytics-title="price-band-d"]').get_attribute('href')
-        LPR_href.append(Between_100_150)
-        price_range.update({'Between 100 and 150':Between_100_150})
-
-        Over_200 = self.driver.find_element(
-            By.XPATH,'//a[@data-analytics-title="price-band-e"]').get_attribute('href')
-        LPR_href.append(Over_200)
-        price_range.update({'Over_200':Over_200})
-
-        print(list(LPR_href))
-        print(price_range)
-
-        for i in LPR_href[0::]:
-            self.driver.get(i)
-            time.sleep(2)
-            return self.lego_product_links()
+   
      
     def sets_by_theme(self):
         """This method is used to click Theme menu"""
@@ -172,7 +127,7 @@ class Scraper():
     
     def lego_product_info(self):
         """Click each lego product link and get the Product name , link, prices.
-            Update these info in lego_dict . Create each record unique to avoid copies using UUID"""
+            Update these info in lego_dict. Create each record unique to avoid copies using UUID"""
         #self.lego_links 
         self.Lego_dict = {
             'Product_name':[],'Rating':[],'Prices':[],
@@ -322,14 +277,15 @@ class Scraper():
                     print('UUID is',uuid.uuid4())
                 except:
                         pass
-
     def Data_list(self):
         """Create a data table using panda for product info"""
         return(print(pd.DataFrame(self.Lego_dict)))
+
     def Image_data(self):  
         """Create a data table for immages using panda for lego images info"""
         return(print(pd.DataFrame(self.Image_dict))) 
     
+    @staticmethod
     def data_JSON(self):
         """Created a JSON file in the root folder clled 'raw_data'-->data.json"""
         path = '/home/lakshmi/Documents/DS/Selenium/Lego/raw_data'
@@ -347,30 +303,72 @@ class Scraper():
     def quit(self):
         self.driver.quit()
 
-    
+    def scrape_now(self):
+        '''
+        runs the various methods to accept cookies, select all themes, collect and download data and images
+        '''
+        try:
+            self.lego_continue()
+            self.necessary_cookies()
+            self.shop()
+            self.sets_by_theme()
+            self._Theme_container()
+            self._Theme_extract_href()
+            self.lego_product_links()
+            self.lego_product_info()
+            self.Data_list()
+            self.data_JSON()
+            
+        finally: 
+            self.quit()
 
+    def _set_by_price(self)-> None:
+        """This method is used to click Theme menu"""
+        xpath = '//*[@id="blte6fb96bc03e90791_submenubutton"]/div/span'
+        try:
+            time.sleep(2)
+            WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH, xpath)))
+            self.driver.find_element(By.XPATH,xpath).click()
+        except TimeoutException:
+            print('no elements found')
+    
+    def _Price_Range_href(self) -> str:
+        """This method is used to click Theme menu"""
+        LPR_href = []
+        price_range = {}
+        
+        Under_20 = self.driver.find_element(
+            By.XPATH,'//a[@data-analytics-title="price-band-a"]').get_attribute('href')
+        LPR_href.append(Under_20)
+        price_range.update({'Under 20':Under_20})
+        Between_20_50 = self.driver.find_element(
+            By.XPATH,'//a[@data-analytics-title="price-band-b"]').get_attribute('href')
+        LPR_href.append(Between_20_50)
+        price_range.update({'Between 20 and 50':Between_20_50})
+
+        Between_50_100 = self.driver.find_element(
+            By.XPATH,'//a[@data-analytics-title="price-band-c"]').get_attribute('href')
+        LPR_href.append(Between_50_100)
+        price_range.update({'Between 50 and 100':Between_50_100})
+
+        Between_100_150 = self.driver.find_element(
+            By.XPATH,'//a[@data-analytics-title="price-band-d"]').get_attribute('href')
+        LPR_href.append(Between_100_150)
+        price_range.update({'Between 100 and 150':Between_100_150})
+
+        Over_200 = self.driver.find_element(
+            By.XPATH,'//a[@data-analytics-title="price-band-e"]').get_attribute('href')
+        LPR_href.append(Over_200)
+        price_range.update({'Over_200':Over_200})
+
+        print(list(LPR_href))
+        print(price_range)
+
+        for i in LPR_href[0::]:
+            self.driver.get(i)
+            time.sleep(2)
+            return self.lego_product_links()
 
 if __name__ == '__main__' : 
-    bot = Scraper('Minions')
-    bot.lego_continue()
-    bot.necessary_cookies()
-    bot.shop()
-    bot.sets_by_theme()
-    bot.select_theme()
-    bot.Availability()
-    bot.check_available_now()
-    #bot.container()
-    #bot.find_container()
-    #bot.Container()
-    #bot.lego_products()
-    bot.lego_product_links()
-    bot.lego_image_downloader()
-    bot.lego_product_info()
-    bot.Data_list()
-    bot.Image_data()
-    bot.data_JSON()
-
-
-#print(container)
-#list_items = container.find_elements(By.XPATH,'//*[@class ="ProductGridstyles__Item-lc2zkx-1 bDqwSC"]')
-    
+    bot = Scraper()
+    bot.scrape_now() 
