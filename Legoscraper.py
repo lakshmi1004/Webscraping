@@ -36,7 +36,11 @@ class Scraper():
         return None
 
     def lego_continue(self)-> None:
-        """This function is created to click the cookie button in the Webpage"""
+        """ This function is created to click the cookie button in the Webpage.
+        Args: xpath
+        Returns: None
+         """
+
         xpath = '//*[@id="root"]/div[5]/div/div/div[1]/div[1]/div/button'
         try:
             time.sleep(2)
@@ -44,10 +48,16 @@ class Scraper():
             self.driver.find_element(By.XPATH, xpath).click()
         except TimeoutException:
             print('no elements found')
+
         return None
 
     def necessary_cookies(self)-> None:
-        """This method is meant to click the necessary cookies"""
+
+        """This method is meant to click the 'just necessary cookies' 
+        Args: xpath
+        Returns: None
+        """
+
         xpath = '//button[contains(@class,"Button__Base-sc-1jdmsyi-0 eCVPKR")]'
         try:
             #time.sleep(2)
@@ -55,10 +65,15 @@ class Scraper():
             self.driver.find_element(By.XPATH,xpath).click()
         except TimeoutException:
             print('no elements found')
+
         return None
 
     def shop(self)-> None:
-        """This method is used to click the shop menu"""
+
+        """This method is will click 'Shop' menu from lego website.
+        Args: Xpath as "data-test = see-all-link"
+        Returns: None
+        """
         xpath ='//*[@id="blt51f52bea34c3fb01_menubutton"]'
         try:
             time.sleep(2)
@@ -69,8 +84,12 @@ class Scraper():
     
         return None
 
-    def _shop_by_theme(self):
-        """This method is used to click Theme menu"""
+    def _shop_by_theme(self) -> None:
+
+        """This method is will click Theme menu <-- Shop drop down menu.
+        Args: Xpath
+        Returns: None
+        """
         xpath = '//*[@id="blt6e23fc5280e75abb_submenubutton"]/div'
         try:
            time.sleep(2)
@@ -79,8 +98,15 @@ class Scraper():
         except TimeoutException:
            print('no elements found')
 
-    def _click_see_all_theme(self):
-        """This method is used to click Theme menu"""
+        return None
+
+    def _click_see_all_theme(self) -> None:
+
+        """This method is will click 'see all themes' <-- Theme menu <-- Shop drop down menu.
+        Args: Xpath as "data-test = see-all-link"
+        Returns: None
+
+        """
         xpath = '//*[@data-test="see-all-link"]'
         try:
            time.sleep(2)
@@ -88,29 +114,26 @@ class Scraper():
            self.driver.find_element(By.XPATH,xpath).click()
         except TimeoutException:
            print('no elements found')
-    
-    def __sets_by_theme(self):
-        """This method is used to click Theme menu"""
-        xpath = '//*[@id="blt6e23fc5280e75abb_submenubutton"]/div'
-        try:
-           time.sleep(2)
-           WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH, xpath)))
-           self.driver.find_element(By.XPATH,xpath).click()
-        except TimeoutException:
-           print('no elements found')
 
-    def _Theme_container(self)->str:
+        return None
 
-        return(lego_theme_container(self.driver.find_elements(
-            By.XPATH,'//div[@class="SubMenustyles__ChildrenMenu-lbil4s-6 hsBVqy"]//following-sibling::div')))
-        #(container.lego_container)
-        #instance.attribute in current scraper
+    def _lego_theme_list(self) -> list:
+
+        """This method is will click 'see all themes' <-- Theme menu <-- Shop drop down menu.
+        Args: Xpath 
+        Returns: None
+
+        """
+        xpath = '//li[@class = "CategoryListingPagestyle__ListItemAlternate-sc-880qxz-7 drzfAx"]'
+        self.theme_list = self.driver.find_elements(By.XPATH,xpath)
+
+        return self.theme_list
 
     def _Theme_extract_href(self):
         
         self.Theme_href = []
         self.Theme_dict = ({'Lego_theme_link':[],'Theme_name': []})
-        for theme_link in self._Theme_container().lego_container[::-1]:
+        for theme_link in self.theme_list[0::]:
             Theme_name = theme_link.find_element(By.TAG_NAME,'a').get_attribute('data-analytics-title')
             self.Theme_dict['Theme_name'].append(Theme_name)
             Lego_theme_link = theme_link.find_element(By.TAG_NAME,'a').get_attribute('href')
@@ -118,16 +141,20 @@ class Scraper():
             self.Theme_href.append(theme_link.find_element(By.TAG_NAME,'a').get_attribute('href'))
             #Theme_dict['Theme_UUID'].append(uuid.uuid4())
                 #print('UUID is',uuid.uuid4())
-        return (list(self.Theme_href))
+
+        return self.Theme_href
+
 
     def _Extract_themewise_product_link(self)->str:
-        for href in self.Theme_href[0::]:
+        for href in self.Theme_href[0:1]:
             self.driver.get(href)
             #print(href)
             self._show_all()
             self._lego_product_links()
+            self._lego_product_info()
+        return self.Lego_dict
 
-    def _show_all(self):
+    def _show_all(self) -> None:
         """This method clicks the 'show all' button in the page in order to display all the search result of the multile page"""
         xpath = '//a[@data-test="pagination-show-all"]'
         #'//*[@id="blt441564c4a0c70d99"]/section/div/div/div[3]/a'
@@ -138,8 +165,10 @@ class Scraper():
             self.driver.find_element(By.XPATH,xpath).click()
         except TimeoutException:
             print("only one page lego product is available. No Show all button' is displayed")
-    
-    def _lego_product_links(self):
+
+        return None
+
+    def _lego_product_links(self) -> list:
         """List_item = finds the list of products or container.
            Each list in the container get the href of each products of items in the container  """
 
@@ -148,16 +177,16 @@ class Scraper():
         WebDriverWait(self.driver,30).until(EC.presence_of_element_located((By.XPATH, '//*[@data-test = "product-item"]')))
         self.list_items = self.driver.find_elements(By.XPATH,'//*[@data-test = "product-item"]') 
         self.lego_links = []
-        for legoitems_link in self.list_items[0:]:
+        for legoitems_link in self.list_items[0::]:
             self.lego_links.append(legoitems_link.find_element(By.TAG_NAME,'a').get_attribute('href'))
-        return print(self.lego_links)
+        return self.lego_links
 
     def _lego_product_info(self)-> dict:
         """Click each lego product link and get the Product name , link, prices.
             Update these info in lego_dict. Create each record unique to avoid copies using UUID"""
         #self.lego_links 
         self.Lego_dict = {
-            'Product_name':[],'Rating':[],'Prices':[],'link':[],'Pieces':[],'Age':[],
+            'Product_name':[],'Rating':[],'Prices':[],'link':[],'Pieces':[],'Age':[],'Lego_Theme':[],
             'Availability':[],'Discount':[],'Discount_Price':[],'Item_num':[],'VIP_Points':[],
             'UUID':[]}
         
@@ -167,11 +196,21 @@ class Scraper():
             self.Lego_dict['link'].append(link)
             try:
                 time.sleep(2)
-                Prices = self.driver.find_element(By.XPATH,'//div[@data-test="product-leaf-price"]')
+                Prices = self.driver.find_element(By.XPATH,'//span[@data-test="product-price"]')
+                #Prices = Price.rsplit('/n')
                 self.Lego_dict['Prices'].append(Prices.text)
             
             except NoSuchElementException:
                 self.Lego_dict['Prices'].append('N/A')
+
+            try:
+                time.sleep(2)
+                LT = self.driver.find_element(By.XPATH,'//a[@class="ProductOverviewstyles__BrandLink-sc-1a1az6h-6 kikPBQ"]')
+                Lego_Theme = LT.find_element(By.TAG_NAME,'img').get_attribute('alt')
+                self.Lego_dict['Lego_Theme'].append(Lego_Theme)
+            except NoSuchElementException:
+                self.Lego_dict['Lego_Theme'].append('N/A')
+
             try:
                 time.sleep(2)
                 Product_name = self.driver.find_element(By.XPATH,'//h1[@data-test="product-overview-name"]')
@@ -203,7 +242,7 @@ class Scraper():
             except NoSuchElementException:
                 self.Lego_dict['Pieces'].append('Num of Pieces not available for this product ')
             try:
-                Discount_Price = self.driver.find_element(By.XPATH,'//div[@data-test="product-price-sale"]')
+                Discount_Price = self.driver.find_element(By.XPATH,'//span[@data-test="product-price-sale"]')
                 self.Lego_dict['Discount_Price'].append(Discount_Price.text)
                 print(Discount_Price.text)
             except NoSuchElementException:
@@ -235,7 +274,6 @@ class Scraper():
             except NoSuchElementException:
                 self.Lego_dict['VIP_Points'].append('N/A')
                      
-
             try:
                 self.Lego_dict['UUID'].append(str(uuid.uuid4()))
                 print('UUID is',uuid.uuid4())
@@ -252,7 +290,8 @@ class Scraper():
         """Create a data table for immages using panda for lego images info"""
         return(print(pd.DataFrame(self.Image_dict))) 
 
-    def __create_raw_data_folder(self):
+    @staticmethod
+    def _create_raw_data_folder(self):
 
         path = '/home/lakshmi/Documents/DS/Webscraping/Lego/raw_data'
         os.mkdir(path)
@@ -271,7 +310,7 @@ class Scraper():
         if not os.path.exists(folder):
             os.makedirs(folder)
         
-        with open('/home/lakshmi/Documents/DS/Selenium/Lego/raw_data/data.json', 'w') as f:
+        with open('data.json', 'w') as f:
             f.write(json.dumps(self.Lego_dict,indent=4, sort_keys=True))
         
     def __delete_from_local_machine(self):
